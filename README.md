@@ -43,7 +43,7 @@ flowchart TD
 
 Tests: 9 passed. These values describe the bundled route fixtures and probe catalog only.
 
-## Design decisions and lessons to discuss
+## What I learned / design decisions I made
 
 - The metric treats a block as a positive prediction and a forbidden request as the positive label; the deny-all control demonstrates why recall alone is insufficient.
 - Each probe uses a fresh in-process client, which makes the test deterministic but does not exercise network, gateway, session, or deployment behavior.
