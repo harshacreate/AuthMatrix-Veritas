@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AuthMatrix-Veritas</title>
+<style>
+  :root{
+    --bg:#f5f5f7; --card:#ffffff; --ink:#1d1d1f; --muted:#6e6e73; --line:#e3e3e8;
+    --accent:#4f46e5; --accent2:#6366f1; --ok:#1a7f45; --okbg:#e4f5ea; --bad:#b42318; --badbg:#fdeceb;
+    --amber:#8a6100; --amberbg:#fdf3df;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .hero{text-align:center;padding:64px 22px 34px;max-width:860px;margin:0 auto}
+  .logo{width:60px;height:60px;margin:0 auto 20px;display:block}
+  .hero h1{margin:0;font-size:clamp(34px,5.4vw,52px);font-weight:700;letter-spacing:-.025em}
+  .hero .sub{color:var(--muted);font-size:19px;margin-top:14px;font-weight:400}
+  .wrap{max-width:1080px;margin:0 auto;padding:6px 18px 90px}
+  .grid{display:grid;grid-template-columns:360px 1fr;gap:20px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .card h3{margin:0 0 4px;font-size:19px;font-weight:600;letter-spacing:-.01em}
+  .card .hint{color:var(--muted);font-size:13px;margin:0 0 14px}
+  label{display:block;font-size:13px;color:var(--muted);margin:14px 0 6px;font-weight:500}
+  select,input,textarea{width:100%;background:#fbfbfd;border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:11px 12px;font:inherit}
+  select:focus,input:focus,textarea:focus{outline:2px solid var(--accent2);border-color:transparent}
+  textarea{min-height:60px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  .rowf{display:flex;gap:10px}.rowf>*{flex:1}
+  button{width:100%;margin-top:18px;background:var(--accent);border:0;color:#fff;border-radius:980px;padding:13px;font:inherit;font-weight:600;cursor:pointer;font-size:15px;transition:background .15s}
+  button:hover{background:var(--accent2)} button.ghost{background:#ececf2;color:var(--ink)} button.ghost:hover{background:#e2e2ea}
+  .presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .presets button{width:auto;margin:0;padding:7px 12px;font-size:12.5px;background:#ececf2;color:var(--ink);border-radius:980px}
+  .presets button:hover{background:#e2e2ea}
+  .verdict{border-radius:16px;padding:14px 16px;margin-bottom:16px;font-weight:600;border:1px solid var(--line);background:#fafafa}
+  .v-fix{background:var(--okbg);border-color:#bfe6cd;color:#145c32}
+  .v-allow{background:var(--amberbg);border-color:#f0dfb0;color:#6b4c00}
+  .pill{display:inline-block;font-size:12px;font-weight:600;color:var(--muted);background:#f0f0f4;border-radius:980px;padding:2px 10px}
+  .apps{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+  @media(max-width:620px){.apps{grid-template-columns:1fr}}
+  .app{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fbfbfd}
+  .app h4{margin:0 0 8px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:flex;justify-content:space-between;align-items:center}
+  .badge{font-size:11px;font-weight:800;padding:3px 10px;border-radius:980px}
+  .b-blocked{background:var(--okbg);color:var(--ok)} .b-allowed{background:var(--badbg);color:var(--bad)}
+  pre{margin:0;background:#1d1d1f;color:#e8e8ed;border-radius:12px;padding:12px;overflow:auto;font-family:ui-monospace,Menlo,monospace;font-size:12px;max-height:200px}
+  .policy{margin-top:14px;color:var(--muted);font-size:13.5px} .policy code{background:#f0f0f4;color:var(--ink);padding:2px 7px;border-radius:7px}
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media(max-width:620px){.tiles{grid-template-columns:1fr 1fr}}
+  .tile{background:#fbfbfd;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .tile .n{font-size:26px;font-weight:700;letter-spacing:-.02em} .tile .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+  table{width:100%;border-collapse:collapse;font-size:13px} th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)} th{color:var(--muted);font-weight:600}
+  .mono{font-family:ui-monospace,Menlo,monospace} .muted{color:var(--muted)}
+  .kf{color:var(--bad);font-weight:600} .kl{color:var(--ok);font-weight:600}
+  h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:30px 0 12px;font-weight:600}
+  .spin{display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:s .7s linear infinite;vertical-align:-2px}
+  @keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <svg class="logo" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="k" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#4338ca"/></linearGradient></defs>
+    <rect x="12" y="26" width="36" height="26" rx="7" fill="url(#k)"/>
+    <path d="M19 26v-6a11 11 0 0122 0v6" stroke="url(#k)" stroke-width="4" fill="none"/>
+    <circle cx="30" cy="37" r="4" fill="#fff"/><rect x="28.3" y="39" width="3.4" height="8" rx="1.5" fill="#fff"/>
+  </svg>
+  <h1>AuthMatrix&nbsp;Veritas</h1>
+  <div class="sub">A workbench for broken-authorization testing. Run any request against a vulnerable
+    and a hardened API side by side, and watch the policy decide — across users, roles and tenants.</div>
+</div>
+
+<div class="wrap">
+  <div class="grid">
+    <div class="card">
+      <h3>Request builder</h3>
+      <p class="hint">Choose a caller, an endpoint and a payload — then run it against both APIs.</p>
+      <label>Caller</label>
+      <select id="user"></select>
+      <div class="rowf">
+        <div><label>Method</label><select id="method"><option>GET</option><option>POST</option><option>PATCH</option><option>DELETE</option></select></div>
+        <div style="flex:2"><label>Path</label><input id="path" value="/users/1" spellcheck="false"></div>
+      </div>
+      <label>Body (JSON, for PATCH/POST)</label>
+      <textarea id="body" spellcheck="false"></textarea>
+      <button id="runBtn" onclick="runReq()">Run against both APIs</button>
+      <label>Load a scenario</label>
+      <select id="scenario" onchange="loadScenario()"></select>
+      <div class="presets" id="presets"></div>
+    </div>
+
+    <div class="card">
+      <h3>Result</h3>
+      <p class="hint">The vulnerable API leaks; the hardened API enforces the policy.</p>
+      <div id="verdict" class="muted">Run a request to compare the two APIs.</div>
+      <div id="result"></div>
+      <div id="policy" class="policy"></div>
+    </div>
+  </div>
+
+  <h2>Live metrics — hardened API</h2>
+  <div class="card">
+    <div class="tiles" id="tiles"></div>
+    <div class="grid" style="margin-top:16px;grid-template-columns:1fr 1fr">
+      <div><h2 style="margin-top:0">By route</h2><div id="byroute"></div></div>
+      <div><h2 style="margin-top:0">By caller role</h2><div id="byrole"></div></div>
+    </div>
+    <p class="muted" id="summary" style="margin-top:14px"></p>
+  </div>
+
+  <h2>Coverage matrix</h2>
+  <div class="card"><div id="coverage"></div></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id); let CAT=null;
+async function boot(){
+  CAT=await (await fetch('/api/catalogue')).json();
+  $('user').innerHTML='<option value="">(anonymous)</option>'+CAT.users.map(x=>`<option value="${x.username}">${x.username} · ${x.role} · ${x.tenant}</option>`).join('');
+  $('user').value='bob';
+  $('scenario').innerHTML='<option value="">— choose a probe —</option>'+CAT.scenarios.map((s,i)=>`<option value="${i}">${s.probe_id} · ${s.kind} · ${s.title}</option>`).join('');
+  $('presets').innerHTML=CAT.endpoints.map((e,i)=>`<button onclick="loadPreset(${i})">${e.label}</button>`).join('');
+  loadMetrics();
+}
+function loadPreset(i){const e=CAT.endpoints[i];$('method').value=e.method;$('path').value=e.path;$('body').value=e.body?JSON.stringify(e.body):'';}
+function loadScenario(){const i=$('scenario').value;if(i==='')return;const s=CAT.scenarios[i];$('user').value=s.caller;$('method').value=s.method;$('path').value=s.path;$('body').value=s.body?JSON.stringify(s.body):'';}
+function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function badge(a){return a?'<span class="badge b-allowed">ALLOWED</span>':'<span class="badge b-blocked">BLOCKED</span>';}
+function appCard(t,r){return `<div class="app"><h4>${t} ${badge(r.allowed)}</h4><div class="muted" style="margin-bottom:6px">HTTP ${r.status}</div><pre>${esc(JSON.stringify(r.body,null,2))}</pre></div>`;}
+async function runReq(){
+  const btn=$('runBtn'); btn.innerHTML='<span class="spin"></span> Running…'; btn.disabled=true;
+  const r=await (await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:$('user').value,method:$('method').value,path:$('path').value,body:$('body').value})})).json();
+  btn.innerHTML='Run against both APIs'; btn.disabled=false;
+  if(r.error){$('verdict').innerHTML='<span class="kf">'+r.error+'</span>';return;}
+  const map={fix_blocks:['v-fix','The vulnerable API allows this — the hardened API blocks it. The fix works.'],
+    both_allow:['v-allow','Both APIs allow this — a legitimate action.'],
+    both_block:['','Both APIs block this.'], only_secure_allows:['v-allow','Only the hardened API allows this.']};
+  const [cls,msg]=map[r.verdict]||['',''];
+  $('verdict').className='verdict '+cls;
+  $('verdict').innerHTML=`<b>${r.request.method} ${r.request.path}</b> as <span class="mono">${r.request.user||'anonymous'}</span> <span class="pill">${r.request.role}/${r.request.tenant}</span><br>${msg}`;
+  $('result').innerHTML=`<div class="apps" style="margin-top:12px">${appCard('Vulnerable API',r.vulnerable)}${appCard('Hardened API',r.secure)}</div>`;
+  $('policy').innerHTML=r.policy?`<b>Policy</b> — <span class="pill">${r.policy.owasp}</span><br>${r.policy.rule}<br><span class="muted">Hardened check:</span> <code>${esc(r.policy.secure)}</code>`:'';
+}
+function confLine(c){const p=c.precision===null?'n/a':c.precision.toFixed(2);return `recall ${c.recall.toFixed(2)} · precision ${p} · specificity ${c.specificity.toFixed(2)}`;}
+function sliceTable(o){return '<table>'+Object.entries(o).map(([k,c])=>`<tr><td class="mono">${k}</td><td>${confLine(c)}</td></tr>`).join('')+'</table>';}
+async function loadMetrics(){
+  const m=await (await fetch('/api/metrics')).json(); const s=m.secure.confusion;
+  $('tiles').innerHTML=[['Recall',s.recall.toFixed(2)],['Precision',s.precision===null?'n/a':s.precision.toFixed(2)],['Specificity',s.specificity.toFixed(2)],['Flaws found',m.vulnerable.flaws_found.length+'/8']].map(([l,n])=>`<div class="tile"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+  $('byroute').innerHTML=sliceTable(m.secure.by_route); $('byrole').innerHTML=sliceTable(m.secure.by_role);
+  $('summary').innerHTML=`Hardened API: <b class="${m.secure.secure?'kl':'kf'}">${m.secure.secure?'PASS':'FAIL'}</b> — stops every attack and breaks no valid action. Deny-all control: <b class="${m.deny_all.secure?'kf':'kl'}">${m.deny_all.secure?'ERROR':'correctly NOT secure'}</b> (precision ${m.deny_all.confusion.precision}).`;
+  $('coverage').innerHTML='<table><tr><th>probe</th><th>kind</th><th>role</th><th>route</th><th>what it tries</th></tr>'+m.coverage.map(c=>`<tr><td class="mono">${c.probe_id}</td><td class="${c.kind==='forbidden'?'kf':'kl'}">${c.kind}</td><td>${c.role}</td><td class="mono">${c.route}</td><td>${c.title}</td></tr>`).join('')+'</table>';
+}
+boot();
+</script>
+</body>
+</html>

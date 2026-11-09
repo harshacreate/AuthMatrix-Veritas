@@ -1,0 +1,14 @@
+services:
+  authmatrix:
+    build: .
+    image: authmatrix-veritas:local
+    container_name: authmatrix-veritas
+    ports:
+      - "127.0.0.1:8092:8000"
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 384m
+    restart: unless-stopped
