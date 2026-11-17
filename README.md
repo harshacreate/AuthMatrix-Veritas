@@ -29,7 +29,7 @@ flowchart TD
 
 ### Dashboard
 
-![AuthMatrix-Veritas dashboard showing route probes and authorization metrics](screenshots/dashboard.jpg)
+![AuthMatrix-Veritas dashboard showing route probes and authorization metrics](docs/screenshots/dashboard.jpg)
 
 ## Results / evaluation
 
@@ -71,6 +71,13 @@ make workbench  # optional local UI, 127.0.0.1:8070
 ```
 
 For a manual local demonstration, `make serve-vuln` and `make serve-secure` run separate APIs on loopback. Keep the intentionally vulnerable app isolated and use only the bundled fixture data.
+
+## Project documents
+
+- [Project overview](PROJECT_OVERVIEW.md) — scope and system design.
+- [Learning guide](LEARNING_GUIDE.md) — concepts behind the project.
+- [Project walkthrough](PROJECT_WALKTHROUGH.md) — setup, code map, and run instructions.
+- [Project report](REPORT.md) — detailed written report.
 
 ## Limitations & next steps
 
