@@ -74,10 +74,10 @@ For a manual local demonstration, `make serve-vuln` and `make serve-secure` run 
 
 ## Project documents
 
-- [Project overview](PROJECT_OVERVIEW.md) — scope and system design.
-- [Learning guide](LEARNING_GUIDE.md) — concepts behind the project.
-- [Project walkthrough](PROJECT_WALKTHROUGH.md) — setup, code map, and run instructions.
-- [Project report](REPORT.md) — detailed written report.
+- [Project overview](docs/PROJECT_OVERVIEW.md) — scope and system design.
+- [Learning guide](docs/LEARNING_GUIDE.md) — concepts behind the project.
+- [Project walkthrough](docs/PROJECT_WALKTHROUGH.md) — setup, code map, and run instructions.
+- [Project report](docs/REPORT.md) — detailed written report.
 
 ## Limitations & next steps
 
