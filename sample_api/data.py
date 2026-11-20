@@ -1,15 +1,7 @@
-"""Shared, in-memory data layer and a trivial token scheme.
-
-The token is intentionally simple (base64 of the username) so the focus stays on
-authorization logic, not auth cryptography. Each app gets a fresh copy of the
-seed data via `fresh_store()` so tests are isolated.
-
-The model is multi-dimensional on purpose, so authorization can be exercised
-across users, roles, tenants, resources and object properties:
-
-  roles   : user  < manager (tenant-scoped admin)  < admin (global)
-  tenants : acme, globex
-  objects : user profiles (with sensitive ssn/salary), orders, tenant documents
+"""Shared sample data for the APIs. The demo token is only a base64 encoded user name. It keeps
+the project focused on access rules, not login security. `fresh_store()` gives each app a
+new copy of the sample data. The data includes users, roles, companies, profiles, orders,
+and company documents. Some profile fields, such as SSN and salary, are private.
 """
 
 from __future__ import annotations

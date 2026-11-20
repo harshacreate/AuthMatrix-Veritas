@@ -1,4 +1,4 @@
-"""Assertions over the expanded, multi-dimensional authorization suite."""
+"""Tests for the API access checks and score results."""
 
 from authz_tests.catalog import PROBES, SEEDED_FLAWS
 from authz_tests.runner import evaluate
@@ -50,7 +50,7 @@ def test_suite_covers_multiple_roles_and_tenancy():
     assert any(p.caller == "mallory" and p.kind == "legitimate" for p in PROBES)
 
 
-# --- workbench engine ---
+# Workbench engine checks.
 
 def test_workbench_shows_fix_blocks_for_bola():
     from workbench.engine import run_request

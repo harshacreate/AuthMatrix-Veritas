@@ -1,21 +1,8 @@
-"""Run the probe suite against each app and score it, sliced by route and role.
-
-Research question: do the tests catch authorization failures (forbidden actions
-that succeed) while still allowing valid actions?
-
-The app is scored as an access-control classifier where "the app blocked the
-action" is the positive prediction and "the action should be blocked" (a
-forbidden probe) is the positive label:
-
-    TP = forbidden & blocked      FP = legitimate & blocked (false denial)
-    FN = forbidden & allowed      TN = legitimate & allowed
-    recall      = TP/(TP+FN)   did it stop the attacks?
-    precision   = TP/(TP+FP)   were its blocks justified?
-    specificity = TN/(TN+FP)   did it let legitimate use through?
-
-Usage:
-  python -m authz_tests.runner
-  python -m authz_tests.runner --json
+"""Run the API access checks and report scores by route and caller role. The scores show
+whether the API blocks requests that should be blocked and allows valid requests. Recall
+shows how many forbidden requests were blocked. Precision shows how many blocked requests
+were meant to be blocked. Specificity shows how many valid requests were allowed. Run python
+-m authz_tests.runner for a report or add --json for JSON output.
 """
 
 from __future__ import annotations
@@ -83,7 +70,7 @@ def score_app(name: str, build_app: Callable) -> Dict:
 
 
 def coverage_matrix() -> List[Dict]:
-    """Which (caller role, route, expectation) combinations the suite exercises."""
+    """List the caller roles, routes, and expected results covered by the checks."""
     seen = []
     for p in PROBES:
         seen.append({"route": p.route, "role": p.caller_role, "caller": p.caller,

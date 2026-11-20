@@ -1,8 +1,6 @@
-"""Drive an arbitrary request against both APIs in-process and compare.
-
-No network listener is opened for the APIs themselves: each request is executed
-with Starlette's TestClient against a freshly-built app, so there is no residual
-state between workbench runs.
+"""Send a request to both sample APIs and compare the results. Starlette’s TestClient runs each
+request inside the process with a new app, so no server is opened and old request data is
+cleared.
 """
 
 from __future__ import annotations
@@ -49,7 +47,7 @@ def run_request(user: Optional[str], method: str, path: str, body: Optional[dict
     vuln = _run_one(vulnerable.build_app, user, method, path, body)
     sec = _run_one(secure.build_app, user, method, path, body)
     role, tenant = ROLE.get(user, ("?", "?")) if user else ("anonymous", "-")
-    # Interpretation: vulnerable allows but secure blocks => the fix stops this.
+    # The bugged app allows it, but the fixed app blocks it.
     if vuln["allowed"] and not sec["allowed"]:
         verdict = "fix_blocks"          # the vulnerable app leaks; the fix prevents it
     elif vuln["allowed"] and sec["allowed"]:
@@ -69,7 +67,7 @@ def run_request(user: Optional[str], method: str, path: str, body: Optional[dict
 
 
 def catalogue() -> Dict:
-    """Static data the UI needs: users, endpoint presets, and probe scenarios."""
+    """Return the users, sample routes, and test cases shown in the workbench."""
     users = [{"username": u, "role": r, "tenant": t} for u, (r, t) in ROLE.items()]
     endpoints = [
         {"method": "GET", "path": "/users/1", "label": "Read user 1 (alice) profile"},

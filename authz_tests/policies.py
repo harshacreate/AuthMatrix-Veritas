@@ -1,5 +1,4 @@
-"""Human-readable authorization policy per route, for the workbench to show
-alongside each request/response comparison."""
+"""Access rules for each route, shown beside the request and response in the workbench."""
 
 from __future__ import annotations
 

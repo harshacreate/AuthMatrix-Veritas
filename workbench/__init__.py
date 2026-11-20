@@ -1,6 +1,3 @@
-"""Interactive authorization workbench.
-
-A small Flask app that runs an arbitrary request against BOTH the vulnerable and
-the hardened API in-process, and shows the request, each response, the verdict,
-and its policy side by side, with live scores and a coverage matrix.
+"""A small Flask app for trying requests against both sample APIs. It shows each request,
+response, result, and access rule, along with scores and a list of checks.
 """

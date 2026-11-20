@@ -1,10 +1,6 @@
-"""A deliberately over-restrictive API: it denies every protected request.
-
-This is the control the scoring must NOT mistake for secure. It blocks all the
-forbidden probes (so a naive "did it reject the attacks?" metric would call it
-perfect), but it also blocks every legitimate request. The runner's precision and
-specificity therefore collapse, which is exactly the point: rejecting everything
-is not the same as being correctly authorized.
+"""This sample API rejects every protected request. It blocks forbidden requests, but it also
+blocks valid ones. The scores show why rejecting everything is not the same as checking
+access correctly.
 """
 
 from __future__ import annotations

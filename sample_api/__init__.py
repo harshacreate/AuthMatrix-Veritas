@@ -1,9 +1,4 @@
-"""A deliberately-seeded sample API and its hardened counterpart.
-
-Two apps are built from the same data layer:
-  * vulnerable.py - contains seeded authorization flaws (for the tests to find)
-  * secure.py     - the fixed version (the tests should find nothing)
-
-Both are ordinary in-process ASGI apps; the test framework drives them with
-Starlette's TestClient, so no network listener is opened.
+"""Two sample APIs use the same data. One has access bugs for the checks to find. The other
+fixes them. Starlette's TestClient runs both inside the process, so they do not open a
+network port.
 """

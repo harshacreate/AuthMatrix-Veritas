@@ -1,17 +1,7 @@
-"""The authorization probe catalogue (multi-dimensional).
-
-Probes are declarative so the suite can report coverage and metrics sliced by
-route and by caller role. Each probe is either:
-
-  * forbidden  - a caller attempts something it must NOT be allowed to do
-                 (tagged with the seeded flaw + OWASP category it targets), or
-  * legitimate - a caller does something it SHOULD be allowed to do.
-
-`action_allowed(resp)` returns True iff the attempted effect actually happened
-(the forbidden data leaked / the privileged change took effect / the valid action
-succeeded). On a correct API, forbidden probes are blocked and legitimate probes
-succeed. Each probe runs against its own fresh client, so state-changing probes
-stay isolated.
+"""List the API requests used to check access rules. Each check records the route, caller role,
+expected result, and any known bug it tests. `action_allowed(resp)` checks whether the
+request worked. A secure API should block requests that are not allowed and accept valid
+ones. Each check uses a new client, so changes in one check do not affect another.
 """
 
 from __future__ import annotations
@@ -19,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable, Dict, List, Optional
 
-# username -> (role, tenant), mirroring sample_api/data.py
+# Each user maps to a role and company, as set in sample_api/data.py.
 ROLE: Dict[str, tuple] = {
     "alice": ("user", "acme"),
     "bob": ("user", "acme"),
@@ -74,7 +64,7 @@ class ProbeResult:
     evidence: str
 
 
-# --- response check helpers -------------------------------------------------
+# Response check helpers.
 
 def _json(resp):
     try:
@@ -105,10 +95,10 @@ def field_equals(field, value):
     return _c
 
 
-# --- the probes -------------------------------------------------------------
+# API checks.
 
 PROBES: List[Probe] = [
-    # ---- forbidden: BOLA (object level) ----
+    # Requests that read or change another user's records.
     Probe("F-BOLA-01", "forbidden", "SF-01", "API1 BOLA", "GET /users/{id}", "bob",
           "Same-tenant cross-user profile read (ssn leak)", "GET", "/users/1", None,
           leaks_field("ssn")),
@@ -117,7 +107,7 @@ PROBES: List[Probe] = [
     Probe("F-BOLA-03", "forbidden", "SF-01", "API1 BOLA", "GET /users/{id}", "carol",
           "Cross-tenant profile read (globex->acme)", "GET", "/users/1", None,
           leaks_field("ssn")),
-    # ---- forbidden: BOPLA (property level / mass assignment) ----
+    # Requests that change fields the caller cannot set.
     Probe("F-BOPLA-01", "forbidden", "SF-03", "API3 BOPLA", "PATCH /users/{id}", "bob",
           "Self-promotion via role property", "PATCH", "/users/2", {"role": "admin"},
           field_equals("role", "admin")),
@@ -127,11 +117,11 @@ PROBES: List[Probe] = [
     Probe("F-BOPLA-03", "forbidden", "SF-03", "API3 BOPLA", "PATCH /users/{id}", "bob",
           "Salary tampering via protected property", "PATCH", "/users/2", {"salary": 999999},
           field_equals("salary", 999999)),
-    # ---- forbidden: tenant isolation (object level) ----
+    # Requests that access another company's data.
     Probe("F-TENANT-01", "forbidden", "SF-05", "API1 BOLA", "GET /tenants/{t}/documents", "carol",
           "Cross-tenant document read (globex->acme)", "GET", "/tenants/acme/documents", None,
           nonempty),
-    # ---- forbidden: BFLA (function level) ----
+    # Requests that use admin actions without the right role.
     Probe("F-BFLA-01", "forbidden", "SF-06", "API5 BFLA", "DELETE /admin/users/{id}", "bob",
           "Non-admin invokes admin delete", "DELETE", "/admin/users/3", None, ok),
     Probe("F-BFLA-02", "forbidden", "SF-07", "API5 BFLA", "GET /admin/metrics", "bob",
@@ -139,7 +129,7 @@ PROBES: List[Probe] = [
     Probe("F-BFLA-03", "forbidden", "SF-08", "API5 BFLA", "DELETE /admin/users/{id}", "mallory",
           "Manager deletes a user OUTSIDE their tenant", "DELETE", "/admin/users/1", None, ok),
 
-    # ---- legitimate: should be ALLOWED ----
+    # Valid requests that should work.
     Probe("L-01", "legitimate", None, "usability", "GET /users/{id}", "alice",
           "User reads their own profile", "GET", "/users/1", None, ok),
     Probe("L-02", "legitimate", None, "usability", "GET /users/{id}/orders", "bob",

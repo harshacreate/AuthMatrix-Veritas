@@ -1,10 +1,6 @@
-"""The workbench web server (Flask).
-
-Serves a single-page UI and small JSON APIs. The APIs drive the vulnerable and
-secure sample APIs in-process (no network listener for them). Bind to loopback.
-
-Run:
-  python -m workbench.app            # http://127.0.0.1:8070
+"""Run the Flask workbench. It serves one web page and JSON APIs. Requests to the sample APIs
+run inside the process. Start it with python -m workbench.app. It uses
+http://127.0.0.1:8070.
 """
 
 from __future__ import annotations

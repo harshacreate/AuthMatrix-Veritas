@@ -1,18 +1,8 @@
-"""The vulnerable sample API (expanded, multi-tenant).
-
-Every seeded flaw is marked with a `SEEDED FLAW <id>` comment so the mapping to
-`authz_tests/catalog.py` is explicit and auditable. The hardened version in
-`secure.py` fixes each one.
-
-OWASP API Security Top 10 (2023) coverage:
-  SF-01  API1 BOLA     cross-user profile read (incl. ssn/salary)
-  SF-02  API1 BOLA     cross-user order listing
-  SF-03  API3 BOPLA    mass assignment of role (self-promotion)
-  SF-04  API3 BOPLA    mass assignment of tenant (cross-tenant move)
-  SF-05  API1 BOLA     cross-tenant document read (tenant isolation)
-  SF-06  API5 BFLA     non-admin invokes admin-only delete
-  SF-07  API5 BFLA     non-admin reads admin-only metrics
-  SF-08  API5 BFLA     manager deletes a user OUTSIDE their tenant
+"""This sample API has known access bugs. Comments mark each bug with its ID and link it to the
+checks in `authz_tests/catalog.py`. The fixed version is in `secure.py`. The bugs cover
+OWASP API Security Top 10 (2023) issues: reading another user's profile or orders, changing
+a role or company, reading another company's files, using admin actions without permission,
+and deleting a user outside the manager's company.
 """
 
 from __future__ import annotations
@@ -62,14 +52,14 @@ def build_app() -> FastAPI:
         target = store.users.get(user_id)
         if not target:
             raise HTTPException(404, "not found")
-        # SEEDED FLAW SF-01 (BOLA): returns ANY user's full record, including ssn
-        # and salary, with no check that the caller may see this object.
+        # Bug SF-01: any user can read another user's full record, including
+        # private fields such as SSN and salary.
         return target.__dict__
 
     @app.get("/users/{user_id}/orders")
     def get_orders(user_id: int, authorization: Optional[str] = Header(default=None)):
         current_user(authorization)
-        # SEEDED FLAW SF-02 (BOLA): any authenticated user reads any user's orders.
+        # Bug SF-02: any signed-in user can read another user's orders.
         return [o.__dict__ for o in store.orders_for(user_id)]
 
     @app.patch("/users/{user_id}")
@@ -80,10 +70,10 @@ def build_app() -> FastAPI:
             raise HTTPException(404, "not found")
         if body.email is not None:
             target.email = body.email
-        # SEEDED FLAW SF-03 (BOPLA): client-supplied role written through -> self-promotion.
+        # Bug SF-03: a user can change their own role.
         if body.role is not None:
             target.role = body.role
-        # SEEDED FLAW SF-04 (BOPLA): client-supplied tenant written through -> cross-tenant move.
+        # Bug SF-04: a user can move themselves to another company.
         if body.tenant is not None:
             target.tenant = body.tenant
         if body.salary is not None:
@@ -93,14 +83,14 @@ def build_app() -> FastAPI:
     @app.get("/tenants/{tenant}/documents")
     def get_documents(tenant: str, authorization: Optional[str] = Header(default=None)):
         current_user(authorization)
-        # SEEDED FLAW SF-05 (BOLA / tenant isolation): any user reads any tenant's docs.
+        # Bug SF-05: any user can read another company's files.
         return [d.__dict__ for d in store.documents_for(tenant)]
 
     @app.delete("/admin/users/{user_id}")
     def delete_user(user_id: int, authorization: Optional[str] = Header(default=None)):
         current_user(authorization)
-        # SEEDED FLAW SF-06 / SF-08 (BFLA): admin-only + tenant-scoped function with
-        # no role or tenant check at all.
+        # Bugs SF-06 and SF-08: this route does not check the caller's role or
+        # company before deleting a user.
         if user_id in store.users:
             del store.users[user_id]
         return {"deleted": user_id}
@@ -108,7 +98,7 @@ def build_app() -> FastAPI:
     @app.get("/admin/metrics")
     def admin_metrics(authorization: Optional[str] = Header(default=None)):
         current_user(authorization)
-        # SEEDED FLAW SF-07 (BFLA): admin-only data exposed to any authenticated user.
+        # Bug SF-07: any signed-in user can read admin data.
         return {"user_count": len(store.users),
                 "total_salary": sum(u.salary for u in store.users.values())}
 

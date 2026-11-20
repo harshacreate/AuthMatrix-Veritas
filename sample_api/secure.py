@@ -1,14 +1,8 @@
-"""The hardened sample API - each seeded flaw from `vulnerable.py` is fixed.
-
-Authorization model:
-  * object-level: a user may read/edit their own objects; an admin may act on
-    anything; a manager may act within their own tenant.
-  * property-level: role / tenant / salary are never client-settable (BOPLA).
-  * function-level: /admin/metrics is admin-only; delete is admin or a manager
-    acting within their own tenant (BFLA + tenant scope).
-
-Run the authorization tests against this app and they should report zero
-successful forbidden actions AND zero wrongly-denied legitimate actions.
+"""This API fixes the access bugs in `vulnerable.py`. Users can read or edit their own records.
+Admins can access all records, and managers can access records in their company. Clients
+cannot change roles, company names, or salaries (BOPLA). Only admins can use
+`/admin/metrics`. Admins and managers can delete users in a manager's company (BFLA). The
+checks should find no forbidden requests that work and no valid requests that are blocked.
 """
 
 from __future__ import annotations
@@ -43,7 +37,7 @@ def build_app() -> FastAPI:
             raise HTTPException(401, "invalid token")
         return user
 
-    # --- authorization helpers ---
+    # Access helpers.
     def can_read_user(caller: User, target: User) -> bool:
         return (caller.id == target.id
                 or caller.role == "admin"
