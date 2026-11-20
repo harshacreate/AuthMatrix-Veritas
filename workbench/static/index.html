@@ -115,9 +115,9 @@
 const $=id=>document.getElementById(id); let CAT=null;
 async function boot(){
   CAT=await (await fetch('/api/catalogue')).json();
-  $('user').innerHTML='<option value="">(anonymous)</option>'+CAT.users.map(x=>`<option value="${x.username}">${x.username} · ${x.role} · ${x.tenant}</option>`).join('');
+  $('user').innerHTML='<option value="">(anonymous)</option>'+CAT.users.map(x=>`<option value="${x.username}">${x.username}, ${x.role}, ${x.tenant}</option>`).join('');
   $('user').value='bob';
-  $('scenario').innerHTML='<option value="">Choose a sample</option>'+CAT.scenarios.map((s,i)=>`<option value="${i}">${s.probe_id} · ${s.kind} · ${s.title}</option>`).join('');
+  $('scenario').innerHTML='<option value="">Choose a sample</option>'+CAT.scenarios.map((s,i)=>`<option value="${i}">${s.probe_id}, ${s.kind}, ${s.title}</option>`).join('');
   $('presets').innerHTML=CAT.endpoints.map((e,i)=>`<button onclick="loadPreset(${i})">${e.label}</button>`).join('');
   loadMetrics();
 }
@@ -140,7 +140,7 @@ async function runReq(){
   $('result').innerHTML=`<div class="apps" style="margin-top:12px">${appCard('API with access bug',r.vulnerable)}${appCard('Fixed API',r.secure)}</div>`;
   $('policy').innerHTML=r.policy?`<b>Policy:</b> <span class="pill">${r.policy.owasp}</span><br>${r.policy.rule}<br><span class="muted">Access check:</span> <code>${esc(r.policy.secure)}</code>`:'';
 }
-function confLine(c){const p=c.precision===null?'n/a':c.precision.toFixed(2);return `recall ${c.recall.toFixed(2)} · precision ${p} · specificity ${c.specificity.toFixed(2)}`;}
+function confLine(c){const p=c.precision===null?'n/a':c.precision.toFixed(2);return `recall ${c.recall.toFixed(2)}, precision ${p}, specificity ${c.specificity.toFixed(2)}`;}
 function sliceTable(o){return '<table>'+Object.entries(o).map(([k,c])=>`<tr><td class="mono">${k}</td><td>${confLine(c)}</td></tr>`).join('')+'</table>';}
 async function loadMetrics(){
   const m=await (await fetch('/api/metrics')).json(); const s=m.secure.confusion;

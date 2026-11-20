@@ -27,7 +27,7 @@ class LoginBody(BaseModel):
 
 class PatchUser(BaseModel):
     email: Optional[str] = None
-    # role / tenant / salary are deliberately NOT accepted — not client-settable.
+    # role / tenant / salary are deliberately NOT accepted because clients cannot set them.
 
 
 def build_app() -> FastAPI:

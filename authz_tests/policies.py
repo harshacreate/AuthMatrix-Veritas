@@ -23,7 +23,7 @@ POLICIES: Dict[str, Dict] = {
     "PATCH /users/{id}": {
         "owasp": "API3:2023 Broken Object Property Level Authorization (mass assignment)",
         "rule": "A user may edit their own editable fields (email). role, tenant "
-                "and salary are NOT client-settable — the secure model simply does "
+                "and salary are NOT client-settable. The secure model simply does "
                 "not accept them.",
         "secure": "PatchUser has only `email`; require(can_edit_user(caller, target))",
     },

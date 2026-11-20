@@ -1,7 +1,7 @@
 """Shared, in-memory data layer and a trivial token scheme.
 
 The token is intentionally simple (base64 of the username) so the focus stays on
-*authorization* logic, not auth cryptography. Each app gets a fresh copy of the
+authorization logic, not auth cryptography. Each app gets a fresh copy of the
 seed data via `fresh_store()` so tests are isolated.
 
 The model is multi-dimensional on purpose, so authorization can be exercised
