@@ -1,10 +1,10 @@
-# AuthMatrix-Veritas
+AuthMatrix-Veritas
 
 AuthMatrix-Veritas tests whether an API lets users access data or actions they should not. It checks a vulnerable sample API, a fixed version, and a version that blocks every request.
 
 ![CI](https://github.com/harshacreate/AuthMatrix-Veritas/actions/workflows/ci.yml/badge.svg)
 
-## How it works
+How it works
 
 The same sample routes are tested in all three APIs. The test set includes requests that should be blocked and requests that should work.
 
@@ -16,7 +16,7 @@ The project reports:
 
 This matters because an API that blocks every request would stop attacks but would also stop normal use.
 
-## Results
+Results
 
 The project checks 19 sample requests: 10 forbidden and 9 allowed.
 
@@ -28,7 +28,7 @@ The project checks 19 sample requests: 10 forbidden and 9 allowed.
 
 These results apply only to the sample APIs and tests in this repository.
 
-## Run it
+Run it
 
 With Docker:
 
@@ -50,7 +50,7 @@ make run
 
 The optional workbench runs at http://127.0.0.1:8070. Keep the vulnerable sample on your own computer and use only the test data here.
 
-## Project files
+Project files
 
 - [Project overview](docs/PROJECT_OVERVIEW.md)
 - [Learning guide](docs/LEARNING_GUIDE.md)

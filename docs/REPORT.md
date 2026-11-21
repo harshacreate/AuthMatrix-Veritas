@@ -1,10 +1,10 @@
-# API access test report
+API access test report
 
-## Question
+Question
 
 Can a test set find sample API access bugs and also check that normal requests still work?
 
-## Method
+Method
 
 The project runs the same sample routes against three APIs: one with planted access bugs, one with fixes, and one that blocks every request.
 
@@ -16,7 +16,7 @@ The project reports three scores:
 - Precision: how many blocked requests really should have been blocked.
 - Specificity: how many normal requests were allowed.
 
-## Results
+Results
 
 | API | Recall | Precision | Specificity |
 |---|---:|---:|---:|
@@ -26,11 +26,11 @@ The project reports three scores:
 
 The fixed API passed the sample checks. The API that blocks every request also stopped all forbidden requests, but it stopped normal requests too. It is not safe to use just because it blocks everything.
 
-## Limits
+Limits
 
 These are small sample APIs and sample data. The results do not show how the tests would work on a real service. The sample token is simple because the project is about access rules, not login security.
 
-## Run the checks
+Run the checks
 
 ```bash
 make setup
