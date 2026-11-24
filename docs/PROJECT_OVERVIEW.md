@@ -6,9 +6,11 @@ What it checks
 
 The project runs the same sample requests against three APIs:
 
-- A sample API with access bugs.
-- A fixed sample API.
-- An API that blocks every request.
+A sample API with access bugs.
+
+A fixed sample API.
+
+An API that blocks every request.
 
 The test set has 5 users, 3 roles, and 2 groups of sample data. It includes requests that should work and requests that should be blocked. This helps show whether an API is both safe and usable.
 

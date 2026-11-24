@@ -12,17 +12,19 @@ The test set has 5 users, 3 roles, and 2 groups of sample data. It checks 19 req
 
 The project reports three scores:
 
-- Recall: how many forbidden requests were blocked.
-- Precision: how many blocked requests really should have been blocked.
-- Specificity: how many normal requests were allowed.
+Recall: how many forbidden requests were blocked.
+
+Precision: how many blocked requests really should have been blocked.
+
+Specificity: how many normal requests were allowed.
 
 Results
 
-| API | Recall | Precision | Specificity |
-|---|---:|---:|---:|
-| API with bugs | 0.00 | n/a | 1.00 |
-| Fixed API | 1.00 | 1.00 | 1.00 |
-| Blocks every request | 1.00 | 0.53 | 0.00 |
+API: API with bugs; Recall: 0.00; Precision: n/a; Specificity: 1.00
+
+API: Fixed API; Recall: 1.00; Precision: 1.00; Specificity: 1.00
+
+API: Blocks every request; Recall: 1.00; Precision: 0.53; Specificity: 0.00
 
 The fixed API passed the sample checks. The API that blocks every request also stopped all forbidden requests, but it stopped normal requests too. It is not safe to use just because it blocks everything.
 

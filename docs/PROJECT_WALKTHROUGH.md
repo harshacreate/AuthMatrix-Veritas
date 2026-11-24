@@ -24,12 +24,17 @@ To open the optional workbench, run `make workbench`. It uses http://127.0.0.1:8
 
 Main files
 
-- `sample_api/vulnerable.py` has the sample API with access bugs.
-- `sample_api/secure.py` has the same routes with access checks.
-- `sample_api/deny_all.py` blocks every protected request.
-- `authz_tests/catalog.py` lists requests that should work or be blocked.
-- `authz_tests/runner.py` runs the requests and prints the scores.
-- `workbench/` contains the optional web page.
+`sample_api/vulnerable.py` has the sample API with access bugs.
+
+`sample_api/secure.py` has the same routes with access checks.
+
+`sample_api/deny_all.py` blocks every protected request.
+
+`authz_tests/catalog.py` lists requests that should work or be blocked.
+
+`authz_tests/runner.py` runs the requests and prints the scores.
+
+`workbench/` contains the optional web page.
 
 Read the results
 

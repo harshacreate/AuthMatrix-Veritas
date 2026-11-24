@@ -10,9 +10,11 @@ The same sample routes are tested in all three APIs. The test set includes reque
 
 The project reports:
 
-- Recall: how many forbidden requests were blocked.
-- Precision: how many blocked requests really should have been blocked.
-- Specificity: how many allowed requests were allowed.
+Recall: how many forbidden requests were blocked.
+
+Precision: how many blocked requests really should have been blocked.
+
+Specificity: how many allowed requests were allowed.
 
 This matters because an API that blocks every request would stop attacks but would also stop normal use.
 
@@ -20,11 +22,11 @@ Results
 
 The project checks 19 sample requests: 10 forbidden and 9 allowed.
 
-| API | Recall | Precision | Specificity |
-|---|---:|---:|---:|
-| Vulnerable sample | 0.00 | n/a | 1.00 |
-| Fixed sample | 1.00 | 1.00 | 1.00 |
-| Blocks everything | 1.00 | 0.53 | 0.00 |
+API: Vulnerable sample; Recall: 0.00; Precision: n/a; Specificity: 1.00
+
+API: Fixed sample; Recall: 1.00; Precision: 1.00; Specificity: 1.00
+
+API: Blocks everything; Recall: 1.00; Precision: 0.53; Specificity: 0.00
 
 These results apply only to the sample APIs and tests in this repository.
 
@@ -52,9 +54,12 @@ The optional workbench runs at http://127.0.0.1:8070. Keep the vulnerable sample
 
 Project files
 
-- [Project overview](docs/PROJECT_OVERVIEW.md)
-- [Learning guide](docs/LEARNING_GUIDE.md)
-- [Walkthrough](docs/PROJECT_WALKTHROUGH.md)
-- [Project report](docs/REPORT.md)
+[Project overview](docs/PROJECT_OVERVIEW.md)
+
+[Learning guide](docs/LEARNING_GUIDE.md)
+
+[Walkthrough](docs/PROJECT_WALKTHROUGH.md)
+
+[Project report](docs/REPORT.md)
 
 This project uses small sample APIs and does not test a live service.
