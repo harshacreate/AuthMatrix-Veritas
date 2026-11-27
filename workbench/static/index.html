@@ -13,6 +13,13 @@
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
     font:15px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.42;background-image:linear-gradient(rgba(79,70,229,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(79,70,229,.05) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(to bottom,#000,transparent 78%)}
+  .trust-orbit{position:fixed;right:28px;top:92px;width:90px;height:90px;border:1px solid rgba(79,70,229,.18);border-radius:50%;pointer-events:none;opacity:.65}
+  .trust-orbit::before,.trust-orbit::after{content:"";position:absolute;inset:12px;border:1px solid rgba(99,102,241,.28);border-radius:50%;animation:orbit 7s linear infinite}
+  .trust-orbit::after{inset:30px;border-color:rgba(26,127,69,.35);animation-duration:4s;animation-direction:reverse}
+  @keyframes orbit{to{transform:rotate(360deg)}}
+  @media(max-width:620px){.trust-orbit{right:10px;top:78px;transform:scale(.72)}}
+  @media(prefers-reduced-motion:reduce){.trust-orbit::before,.trust-orbit::after{animation:none}}
   .hero{text-align:center;padding:64px 22px 34px;max-width:860px;margin:0 auto}
   .logo{width:60px;height:60px;margin:0 auto 20px;display:block}
   .hero h1{margin:0;font-size:clamp(34px,5.4vw,52px);font-weight:700;letter-spacing:-.025em}
@@ -58,6 +65,7 @@
 </style>
 </head>
 <body>
+<div class="trust-orbit" aria-hidden="true"></div>
 <div class="hero">
   <svg class="logo" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
     <defs><linearGradient id="k" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#4338ca"/></linearGradient></defs>
@@ -140,6 +148,12 @@ async function runReq(){
   $('result').innerHTML=`<div class="apps" style="margin-top:12px">${appCard('API with access bug',r.vulnerable)}${appCard('Fixed API',r.secure)}</div>`;
   $('policy').innerHTML=r.policy?`<b>Policy:</b> <span class="pill">${r.policy.owasp}</span><br>${r.policy.rule}<br><span class="muted">Access check:</span> <code>${esc(r.policy.secure)}</code>`:'';
 }
+document.addEventListener('pointermove', event => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const x = (event.clientX / window.innerWidth - .5) * 8;
+  const y = (event.clientY / window.innerHeight - .5) * 8;
+  document.querySelector('.trust-orbit')?.style.setProperty('transform', `translate(${x}px, ${y}px)`);
+});
 function confLine(c){const p=c.precision===null?'n/a':c.precision.toFixed(2);return `recall ${c.recall.toFixed(2)}, precision ${p}, specificity ${c.specificity.toFixed(2)}`;}
 function sliceTable(o){return '<table>'+Object.entries(o).map(([k,c])=>`<tr><td class="mono">${k}</td><td>${confLine(c)}</td></tr>`).join('')+'</table>';}
 async function loadMetrics(){
